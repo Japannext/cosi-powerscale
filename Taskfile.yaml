@@ -1,0 +1,46 @@
+---
+version: '3'
+
+dotenv: ['.env']
+
+vars:
+  name: cosi-powerscale
+  version: 10.0
+  chart_version: 1.0.0
+
+  oci: ghcr.io/japannext
+  helm_oci: ghcr.io/japannext/helm-charts
+
+  commit:
+    sh: git rev-parse --short HEAD
+
+includes:
+  image:
+    taskfile: ./tasks/image.yaml
+  chart:
+    taskfile: ./charts/cosi-powerscale/Taskfile.yaml
+    dir: ./charts/cosi-powerscale
+
+tasks:
+  build:
+    desc: Build and format the golang code locally
+    cmds:
+    - mkdir -p .build
+    - go fmt ./...
+    - go vet ./...
+    - go build -o .build/ ./...
+
+  develop:
+    desc: Run the development task to deploy in a local k8s cluster
+    cmds:
+    - task: build
+    - task: image:develop
+    - task: chart:develop
+    - task: sync
+
+  sync:
+    desc: Sync to a local k8s cluster (requires a .helmfile.yaml file)
+    cmds:
+    - helmfile -f .helmfile.yaml sync
+    - kubectl rollout restart deploy -l app.kubernetes.io/name=cosi-powerscale
+    - kubectl delete lease powerscale-cosi-japannext-co-jp-cosi

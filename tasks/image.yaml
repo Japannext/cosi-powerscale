@@ -1,0 +1,19 @@
+---
+version: '3'
+
+env:
+  BUILDAH_FORMAT: docker
+
+tasks:
+  develop:
+    cmds:
+    - docker build .
+      -t ${LOCAL_REPO}/{{ .name }}:develop
+      --build-arg VERSION={{ .version }}-develop
+      --build-arg COMMIT={{ .commit }}
+    - docker push ${LOCAL_REPO}/{{ .name }}:develop
+    preconditions:
+    - sh: '[[ -n "${LOCAL_REPO}" ]]'
+      msg: "You need to set LOCAL_REPO=myrepo.example.com:8080 in '.env.local' to use develop tasks"
+    - sh: docker login ${LOCAL_REPO} --get-login
+      msg: "You need to login to docker with `docker login ${LOCAL_REPO}`"

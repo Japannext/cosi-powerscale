@@ -1,0 +1,7 @@
+---
+kind: BucketAccessClass
+apiVersion: objectstorage.k8s.io/v1alpha1
+metadata:
+  name: "{{ .Values.config.name }}"
+driverName: "powerscale.cosi.japannext.co.jp"
+authenticationType: KEY

@@ -1,0 +1,35 @@
+---
+version: '3'
+
+vars:
+  REPO: jnx-repo-upload
+
+tasks:
+  lint:
+    desc: Lint the helm chart
+    cmds:
+    - helm lint
+
+  develop:
+    desc: Upload a dev version of the chart for testing
+    cmds:
+    - mkdir -p .charts
+    - helm package . --version 0.0.0-dev -d .charts/
+    - helm cm-push .charts/{{ .name }}-0.0.0-dev.tgz $HELM_LOCAL_REPO
+    preconditions:
+    - sh: '[[ -n $HELM_LOCAL_REPO ]]'
+      msg: "You need to set HELM_LOCAL_REPO=myrepo in '.env' to use develop tasks. This need to be a ChartMuseum repo."
+    - sh: "helm repo list | awk '{print $1}' | grep -w $HELM_LOCAL_REPO"
+      msg: "You need to setup your helm repo."
+
+  release:
+    desc: Release the finished helm chart, versionned
+    cmds:
+    - mkdir -p .charts
+    - helm package . --version {{ .chart_name }} --app-version {{ .version }} -d .charts/
+    - helm push .charts/keycloak-operator-{{ .chart_version }}.tgz oci://{{ .helm_oci }}
+    preconditions:
+    - sh: "helm repo list | awk '{print $1}' | grep -w '{{ .REPO }}'"
+      msg: "You need to setup your helm repo: https://gitlab.dc.japannext.co.jp/kubernetes/charts/repo#how-to-upload"
+    status:
+    - helm repo update {{ .REPO }} && helm show chart {{ .REPO }}/{{ .NAME }} --version {{ .VERSION }}

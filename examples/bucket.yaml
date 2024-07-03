@@ -1,0 +1,21 @@
+---
+apiVersion: objectstorage.k8s.io/v1alpha1
+kind: BucketClaim
+metadata:
+  name: example
+  namespace: kube-storage
+spec:
+  bucketClassName: nas2
+  protocols:
+    - s3
+---
+apiVersion: objectstorage.k8s.io/v1alpha1
+kind: BucketAccess
+metadata:
+  name: example
+  namespace: kube-storage
+spec:
+  bucketAccessClassName: nas2
+  bucketClaimName: example
+  credentialsSecretName: example-bucket-secret
+  protocol: s3
