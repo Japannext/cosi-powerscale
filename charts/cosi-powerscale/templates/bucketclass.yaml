@@ -3,5 +3,5 @@ kind: BucketClass
 apiVersion: objectstorage.k8s.io/v1alpha1
 metadata:
   name: "{{ .Values.config.name }}"
-driverName: "powerscale.cosi.japannext.co.jp"
+driverName: "{{ .Values.config.name }}.powerscale.cosi.japannext.co.jp"
 deletionPolicy: Delete

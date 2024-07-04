@@ -19,7 +19,6 @@ import (
 
 const (
 	// COSISocket is a default location of COSI API UNIX socket.
-	identityName = "powerscale.cosi.japannext.co.jp"
 	socket       = "/var/lib/cosi/cosi.sock"
 )
 
@@ -28,9 +27,10 @@ type Driver struct {
 	lis    net.Listener
 }
 
-func New(config *config.Config) (*Driver, error) {
+func New(cfg *config.Config) (*Driver, error) {
+	identityName := fmt.Sprintf("%s.powerscale.cosi.japannext.co.jp", cfg.Name)
 	identityServer := identity.New(identityName)
-	provisionerServer := provisioner.New(config)
+	provisionerServer := provisioner.New(cfg)
 
 	options := []grpc.ServerOption{}
 	server := grpc.NewServer(options...)
