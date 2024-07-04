@@ -5,7 +5,7 @@ metadata:
   name: example
   namespace: kube-storage
 spec:
-  bucketClassName: nas2
+  bucketClassName: nas1
   protocols:
     - s3
 ---
@@ -15,7 +15,7 @@ metadata:
   name: example
   namespace: kube-storage
 spec:
-  bucketAccessClassName: nas2
+  bucketAccessClassName: nas1
   bucketClaimName: example
   credentialsSecretName: example-bucket-secret
   protocol: s3
