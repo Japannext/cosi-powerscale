@@ -122,7 +122,7 @@ func (s *Server) getBucketPath(bucketName string) string {
 
 func (s *Server) DeleteDirectoryForBucket(bucketName string) error {
 	path := s.getBucketPath(bucketName)
-	url := fmt.Sprintf("%s/namespace/%s", s.apiEndpoint, path)
+	url := fmt.Sprintf("%s/namespace/%s?recursive=true", s.apiEndpoint, path)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return err
