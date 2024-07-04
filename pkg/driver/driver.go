@@ -19,7 +19,7 @@ import (
 
 const (
 	// COSISocket is a default location of COSI API UNIX socket.
-	socket       = "/var/lib/cosi/cosi.sock"
+	socket = "/var/lib/cosi/cosi.sock"
 )
 
 type Driver struct {

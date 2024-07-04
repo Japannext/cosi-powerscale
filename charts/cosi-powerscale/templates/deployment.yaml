@@ -68,7 +68,7 @@ spec:
           {{- end }}
           {{- if .Values.config.tlsCacertConfigMap }}
           - name: POWERSCALE_TLS_CACERT
-            value: "/cacert/{{ .Values.config.tls.CacertConfigMapKey }}"
+            value: "/cacert/{{ .Values.config.tlsCacertConfigMapKey }}"
           {{- end }}
           volumeMounts:
           - name: cosi-socket-dir
