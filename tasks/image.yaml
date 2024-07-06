@@ -6,6 +6,7 @@ env:
 
 tasks:
   develop:
+    desc: Upload the docker image to a local repo
     cmds:
     - docker build .
       -t ${LOCAL_REPO}/{{ .name }}:develop
@@ -17,3 +18,16 @@ tasks:
       msg: "You need to set LOCAL_REPO=myrepo.example.com:8080 in '.env.local' to use develop tasks"
     - sh: docker login ${LOCAL_REPO} --get-login
       msg: "You need to login to docker with `docker login ${LOCAL_REPO}`"
+  release:
+    desc: Release the Docker image
+    cmds:
+    - docker build .
+      -t {{ .oci_repo }}/{{ .name }}:{{ .version }}
+      --build-arg VERSION={{ .version }}
+      --build-arg COMMIT={{ .commit }}
+    - docker push {{ .oci_repo }}/{{ .name }}:{{ .version }}
+    preconditions:
+    - sh: docker login {{ .oci_repo }} --get-login
+      msg: "You need to login to docker with `docker login {{ .oci_repo }}`"
+    status:  # Protect against accidental re-release
+    - docker manifest inspect {{ .oci_repo }}/{{ .name }}:{{ .version }}

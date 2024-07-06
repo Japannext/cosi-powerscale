@@ -49,7 +49,6 @@ func New() *Config {
 	if err := viper.Unmarshal(&cfg); err != nil {
 		log.Fatal(err)
 	}
-	log.Infof("Loaded config: %+v", cfg)
 
 	return &cfg
 }

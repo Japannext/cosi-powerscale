@@ -8,7 +8,7 @@ This is a COSI driver (Container Object Storage Interface) in order to automate 
 # Installation
 
 ```bash
-helm install nas1 oci://ghcr.io/japannext/helm-charts/cosi-powerscale --version 1.0.0 --values values.yaml
+helm install nas1 oci://ghcr.io/japannext/helm-charts/cosi-powerscale --version 1.1.0 --values values.yaml
 ```
 
 `values.yaml` example:

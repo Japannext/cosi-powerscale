@@ -2,10 +2,14 @@ package powerscale
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"time"
+
+	log "k8s.io/klog/v2"
 
 	"github.com/japannext/cosi-powerscale/pkg/config"
 )
@@ -50,8 +54,26 @@ func (s *Server) basicAuth(req *http.Request) {
 }
 
 func New(cfg *config.Config) *Server {
-	tlsTransport := &tls.Config{
+	tlsConfig := &tls.Config{
 		InsecureSkipVerify: cfg.TlsInsecureSkipVerify,
+	}
+	if cfg.TlsCacert != "" {
+		rootCAs := x509.NewCertPool()
+		pem, err := ioutil.ReadFile(cfg.TlsCacert)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if ok := rootCAs.AppendCertsFromPEM(pem); !ok {
+			log.Errorf("No cert found in %s", cfg.TlsCacert)
+		}
+		tlsConfig.RootCAs = rootCAs
+	}
+	if cfg.TlsClientCert != "" && cfg.TlsClientKey != "" {
+		cert, err := tls.LoadX509KeyPair(cfg.TlsClientCert, cfg.TlsClientKey)
+		if err != nil {
+			log.Fatal(err)
+		}
+		tlsConfig.Certificates = []tls.Certificate{cert}
 	}
 	return &Server{
 		Name:        cfg.Name,
@@ -63,7 +85,7 @@ func New(cfg *config.Config) *Server {
 		S3Region:    cfg.S3Region,
 		basePath:    cfg.BasePath,
 		client: &http.Client{
-			Transport: &http.Transport{TLSClientConfig: tlsTransport},
+			Transport: &http.Transport{TLSClientConfig: tlsConfig},
 		},
 	}
 }
