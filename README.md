@@ -7,6 +7,14 @@ This is a COSI driver (Container Object Storage Interface) in order to automate 
 
 # Installation
 
+You will need an installation of the cosi objectstorage controller:
+```bash
+kubectl create -k github.com/kubernetes-sigs/container-object-storage-interface-api
+kubectl create -k github.com/kubernetes-sigs/container-object-storage-interface-controller
+```
+> (see [official documentation](https://container-object-storage-interface.github.io/docs/deployment-guide) for more details)
+
+Then, you can install the cosi-powerscale driver:
 ```bash
 helm install nas1 oci://ghcr.io/japannext/helm-charts/cosi-powerscale --version 1.1.0 --values values.yaml
 ```
