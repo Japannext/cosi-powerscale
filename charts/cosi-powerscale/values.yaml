@@ -47,6 +47,7 @@ config:
   tlsCacertConfigMap: ""
   tlsCacertConfigMapKey: "ca.crt"
   tlsInsecureSkipVerify: false
+  deletionPolicy: Retain
 
 # rbac specifies parameters for the COSI driver RBAC resources.
 rbac:
